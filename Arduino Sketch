@@ -1,10 +1,7 @@
-//IR_Calculator
-//Done by:Marwan GH
-#include <LiquidCrystal_I2C.h>
+ // My fourth try to make an IR controlled calculator
 #include <Wire.h>
-LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
-#include <IRRemote.h> 
-
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27, 16, 2);//i am using a LCD backpack
 //define all keyCodes to form eligible readings
 #define IRcode0 16738455
 #define IRcode1 16724175
@@ -23,17 +20,17 @@ LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 #define IRdivide 16720605
 #define IRequal 16748655
 
+
 long second = 0;
 long first = 0; 
 long total = 0;
 int RECV_PIN = 11;
 int Math = 0;
 IRrecv irrecv(RECV_PIN);
-
 decode_results results;
 
 void setup()
-{lcd.begin(16,2); // initialize the lcd 
+{lcd.begin(); // initialize the lcd 
   lcd.backlight();  
   Serial.begin(9600);
   irrecv.enableIRIn();
@@ -47,49 +44,10 @@ void loop()
     
   if (Math == 0) //collect first number
 {  
+  int collectValue(first);
   switch(results.value)
   {
-     case IRcode0 :
-    first = first * 10 + (0);
-    break;
-   
-     case IRcode1 :
-    first = first * 10 + (1);
-    break;
-     
-     case IRcode2 :
-    first = first * 10 + (2);
-    break;
-    
-     case IRcode3 :
-    first = first * 10 + (3);
-    break;
-    
-     case IRcode4 :
-    first = first * 10 + (4);
-    break; 
-    
-      case IRcode5 :
-    first = first * 10 + (5);
-    break;
-    
-     case IRcode6 :
-    first = first * 10 + (6);
-    break;
-    
-     case IRcode7 :
-    first = first * 10 + (7);
-    break;
-    
-     case IRcode8 :
-    first = first * 10 + (8);
-    break;
-    
-     case IRcode9 :
-    first = first * 10 + (9);
-    break;
-      
-     case IRadd :
+    case IRadd :
      Math = 1;
      lcd.setCursor(0,1);
      lcd.print("+");
@@ -112,14 +70,7 @@ void loop()
      lcd.setCursor(0,1);
      lcd.print("/");
      break;
-     
-     
-      case IRReset : //reset
-    first = 0;
-    second = 0;
-    total = 0;
-    lcd.clear();
-    break;
+
    };
     lcd.setCursor(0,0);
    lcd.print(first);
@@ -127,241 +78,32 @@ void loop()
 
  if (Math == 1) //add
 {  
-  switch(results.value)
-  {
-     case IRcode0 :
-    second = second * 10 + (0);
-    break;
-   
-     case IRcode1 :
-    second = second * 10 + (1);
-    break;
-     
-     case IRcode2 :
-    second = second * 10 + (2);
-    break;
-    
-     case IRcode3 :
-    second = second * 10 + (3);
-    break;
-    
-     case IRcode4 :
-    second = second * 10 + (4);
-    break; 
-    
-      case IRcode5 :
-    second = second * 10 + (5);
-    break;
-    
-     case IRcode6 :
-    second = second * 10 + (6);
-    break;
-    
-     case IRcode7 :
-    second = second * 10 + (7);
-    break;
-    
-     case IRcode8 :
-    second = second * 10 + (8);
-    break;
-    
-     case IRcode9 :
-    second = second * 10 + (9);
-    break;
-      
-     case IRequal :
-     Math = 5 ;
-     break;
-     
-      case IRReset : //reset
-    first = 0;
-    second = 0;
-    total = 0;
-    Math = 0;
-    lcd.clear();
-    break;
-   };
-  if(second != 0)
+ second = collectValue(second, 5);
+    if(second != 0)
     {lcd.setCursor(0,1);
    lcd.print(second);};
 };
-
- if (Math == 2) //subtract
-{  
-  switch(results.value)
-  {
-     case IRcode0 :
-    second = second * 10 + (0);
-    break;
-   
-     case IRcode1 :
-    second = second * 10 + (1);
-    break;
      
-     case IRcode2 :
-    second = second * 10 + (2);
-    break;
-    
-     case IRcode3 :
-    second = second * 10 + (3);
-    break;
-    
-     case IRcode4 :
-    second = second * 10 + (4);
-    break; 
-    
-      case IRcode5 :
-    second = second * 10 + (5);
-    break;
-    
-     case IRcode6 :
-    second = second * 10 + (6);
-    break;
-    
-     case IRcode7 :
-    second = second * 10 + (7);
-    break;
-    
-     case IRcode8 :
-    second = second * 10 + (8);
-    break;
-    
-     case IRcode9 :
-    second = second * 10 + (9);
-    break;
-      
-     case IRequal :
-     Math = 6 ;
-     break;
-     
-     case IRReset : //reset
-    first = 0;
-    second = 0;
-    total = 0;
-    lcd.clear();
-    break;
-   };
-    if(second != 0)
+         if (Math == 2) //subtract
+         {  
+  second = collectValue(second, 6);
+     if(second != 0)
     {lcd.setCursor(0,1);
    lcd.print(second);};
 };
      
       if (Math == 3) //multiply
 {  
-  switch(results.value)
-  {
-     case IRcode0 :
-    second = second * 10 + (0);
-    break;
-   
-     case IRcode1 :
-    second = second * 10 + (1);
-    break;
-     
-     case IRcode2 :
-    second = second * 10 + (2);
-    break;
-    
-     case IRcode3 :
-    second = second * 10 + (3);
-    break;
-    
-     case IRcode4 :
-    second = second * 10 + (4);
-    break; 
-    
-      case IRcode5 :
-    second = second * 10 + (5);
-    break;
-    
-     case IRcode6 :
-    second = second * 10 + (6);
-    break;
-    
-     case IRcode7 :
-    second = second * 10 + (7);
-    break;
-    
-     case IRcode8 :
-    second = second * 10 + (8);
-    break;
-    
-     case IRcode9 :
-    second = second * 10 + (9);
-    break;
-      
-     case IRequal :
-     Math = 7 ;
-     break;
-     
-      case IRReset : //reset
-    first = 0;
-    second = 0;
-    total = 0;
-    Math = 0;
-    lcd.clear();
-    break;
-   };
+  second = collectValue(second, 7);
+ 
      if(second != 0)
     {lcd.setCursor(0,1);
    lcd.print(second);};
 };
 
  if (Math == 4) //divide
-{  
-  switch(results.value)
-  {
-     case IRcode0 :
-    second = second * 10 + (0);
-    break;
-   
-     case IRcode1 :
-    second = second * 10 + (1);
-    break;
-     
-     case IRcode2 :
-    second = second * 10 + (2);
-    break;
-    
-     case IRcode3 :
-    second = second * 10 + (3);
-    break;
-    
-     case IRcode4 :
-    second = second * 10 + (4);
-    break; 
-    
-      case IRcode5 :
-    second = second * 10 + (5);
-    break;
-    
-     case IRcode6 :
-    second = second * 10 + (6);
-    break;
-    
-     case IRcode7 :
-    second = second * 10 + (7);
-    break;
-    
-     case IRcode8 :
-    second = second * 10 + (8);
-    break;
-    
-     case IRcode9 :
-    second = second * 10 + (9);
-    break;
-      
-     case IRequal :
-     Math = 8 ;
-     break;
-     
-    case IRReset : //reset
-    first = 0;
-    second = 0;
-    total = 0;
-    lcd.clear();
-    break;
-   };
+{  second = collectValue(second, 8);
+
      if(second != 0)
     {lcd.setCursor(0,1);
    lcd.print(second);};
@@ -396,7 +138,7 @@ if (Math == 7) //multiplication
     lcd.print(total);
 };
 
-if (total == 1515) //over here we make the arduino display strings depending on the answer.
+if (total == 1515) 
   {
     lcd.clear();
     lcd.setCursor(2,1);
@@ -433,3 +175,58 @@ if (results.value == IRReset)
     delay(100);
 
 };
+int collectValue(int No, int Step){
+   switch(results.value)
+  {
+     case IRcode0 :
+    No = No * 10 + (0);
+    break;
+   
+     case IRcode1 :
+    No = No * 10 + (1);
+    break;
+     
+     case IRcode2 :
+    No = No * 10 + (2);
+    break;
+    
+     case IRcode3 :
+    No = No * 10 + (3);
+    break;
+    
+     case IRcode4 :
+    No = No * 10 + (4);
+    break; 
+    
+      case IRcode5 :
+    No = No * 10 + (5);
+    break;
+    
+     case IRcode6 :
+    No = No * 10 + (6);
+    break;
+    
+     case IRcode7 :
+    No = No * 10 + (7);
+    break;
+    
+     case IRcode8 :
+    No = No * 10 + (8);
+    break;
+    
+     case IRcode9 :
+    No =  No * 10 + (9);
+    break;
+    
+    case IRequal :
+     Math = Step ;
+     break;      
+     
+      case IRReset : //reset
+    first = 0;
+    second = 0;
+    total = 0;
+    lcd.clear();
+    break;
+};
+}
